@@ -23,27 +23,51 @@ const (
 )
 
 const (
+	// 0 is invalid state because that is initial value of int variable which can mean that someone didn't bother to actually set the state
+	HostInvalid = iota
 	// host (as in "unit running service checks") is up
-	HostUp = iota
+	HostUp
 	// host is directly unavailable
 	HostDown
 	// host is down because its parent is down (it is impossble to check because device that connects to the host is unavailable
 	HostUnreachable
 )
 
+type Common struct {
+	// Whether upstream acknowledged state (eg. started doing something about it)
+	Acknowledged bool `json:"acknowledged"`
+	// Whether check is flapping between states
+	Flapping bool `json:"flapping"`
+	// Whether it is in downtime
+	Downtime bool `json:"downtime"`
+	// numeric state
+	State uint8 `json:"state"`
+	PreviousState uint8 `json:"previous_state"`
+	StateHard bool `json:"state_hard"`
+	// timestamp of the check
+	Timestamp time.Time `json:"ts"`
+	// Last state change
+	LastStateChange time.Time `json:"last_state_change,omitempty"`
+	// URL service/host can be looked at
+	URL string `json:"url,omitempty"`
+}
+
+
 type Service struct {
+	Common
 	// name of the host/metahost service is running on
 	Host string `json:"host"`
 	// name of service
 	Service string `json:"service"`
-	// numeric state
-	State uint8 `json:"state"`
-	// timestamp of the check
-	Timestamp time.Time `json:"ts"`
-	// duration since last state change
-	StateDuration time.Duration `json:"duration,omitempty"`
+	Description string `json:"service_description,omitempty"`
 	// sub-service state
 	// if service (say web app) have multiple internal components (for example DB backend, video transcoder etc) that allows it to send state of them to the upstream without multiplying amount of service checks
 	// Note that status of them **HAVE** to be aggregated into parent's State
 	Components []Service `json:"components,omitempty"`
+}
+
+type Host struct {
+	Common
+	Host string `json:"host"`
+	Description string `json:"host_description"`
 }
