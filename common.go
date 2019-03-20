@@ -48,8 +48,11 @@ type Common struct {
 	Timestamp time.Time `json:"ts"`
 	// Last state change
 	LastStateChange time.Time `json:"last_state_change,omitempty"`
+	LastHardStateChange time.Time `json:"last_hard_state_change,omitempty"`
 	// URL service/host can be looked at
 	URL string `json:"url,omitempty"`
+	//
+	CheckMessage string `json:"message"`
 }
 
 
