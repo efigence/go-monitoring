@@ -51,8 +51,10 @@ type Common struct {
 	LastHardStateChange time.Time `json:"last_hard_state_change,omitempty"`
 	// URL service/host can be looked at
 	URL string `json:"url,omitempty"`
-	//
+	// message returned from healthcheck
 	CheckMessage string `json:"message"`
+	// display name set for the service/host
+	DisplayName string `json:"display_name"`
 }
 
 
@@ -62,7 +64,6 @@ type Service struct {
 	Host string `json:"host"`
 	// name of service
 	Service string `json:"service"`
-	Description string `json:"service_description,omitempty"`
 	// sub-service state
 	// if service (say web app) have multiple internal components (for example DB backend, video transcoder etc) that allows it to send state of them to the upstream without multiplying amount of service checks
 	// Note that status of them **HAVE** to be aggregated into parent's State
@@ -72,5 +73,4 @@ type Service struct {
 type Host struct {
 	Common
 	Host string `json:"host"`
-	Description string `json:"host_description"`
 }
